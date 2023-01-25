@@ -1,17 +1,26 @@
 const express = require("express");
 const cors = require("cors");
+const { dbConnection } = require("../database/config");
 
 class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
-    this.usersPath = "/api/user";
+    this.usersPath = "/api/users";
+
+    // Connect to DB
+    this.connectDB();
 
     // Middlewares
     this.middlewares();
 
     // App Routes
     this.routes();
+  }
+
+  async connectDB() {
+    // Here we could switch between environments to only connect to the necessary DB
+    await dbConnection();
   }
 
   middlewares() {
