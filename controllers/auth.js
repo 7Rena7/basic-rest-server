@@ -1,9 +1,10 @@
-const { request, response } = require("express");
+const { request, response, json } = require("express");
 const bcryptjs = require("bcryptjs");
 const jsonwebtoken = require("jsonwebtoken");
 
 const User = require("../models/user");
 const { generateJWT } = require("../helpers/generateJWT");
+const { googleVerify } = require("../helpers/google-verify");
 
 const login = async (req = request, res = response) => {
   const { email, password } = req.body;
@@ -50,6 +51,60 @@ const login = async (req = request, res = response) => {
   }
 };
 
+const googleSignin = async (req = request, res = response) => {
+  const { id_token } = req.body;
+  let msg = "User";
+
+  try {
+    const { name, email, picture } = await googleVerify(id_token);
+
+    //  Verify if user exists in db
+    let user = await User.findOne({ email });
+
+    const userData = {
+      name,
+      email,
+      password: "123",
+      image: picture,
+      role: "USER_ROLE",
+      googleCreated: true,
+    };
+
+    if (!user) {
+      // User doesn't exists, create user
+      user = new User(userData);
+      await user.save();
+      msg += "Created";
+    } else {
+      // User exists, update it
+      await User.findOneAndUpdate({ email }, userData);
+      msg += "Updated";
+    }
+
+    // If user in db
+    if (!user.status) {
+      return res.status(401).json({
+        msg: "Talk to administrator - User disabled",
+      });
+    }
+
+    // Generate JWT
+    const token = await generateJWT(user.id);
+
+    res.json({
+      msg,
+      user,
+      token,
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "Token couldn't be validated",
+      error,
+    });
+  }
+};
+
 module.exports = {
   login,
+  googleSignin,
 };

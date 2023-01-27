@@ -4,9 +4,73 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Access Denied</title>
+    <title>Google Sign In</title>
   </head>
-  <body>
-    <h1>Access Denied</h1>
+  <body
+    style="
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      gap: 1em;
+    "
+  >
+    <div
+      id="g_id_onload"
+      data-client_id="132391816256-kol5f1ltrurugqpo8qmpommfok7ur4hn.apps.googleusercontent.com"
+      data-context="signin"
+      data-ux_mode="popup"
+      data-login_uri="http://localhost:8080"
+      data-auto_prompt="false"
+      data-callback="handleCredentialResponse"
+    ></div>
+
+    <div
+      class="g_id_signin"
+      data-type="standard"
+      data-shape="pill"
+      data-theme="filled_blue"
+      data-text="continue_with"
+      data-size="large"
+      data-logo_alignment="left"
+    ></div>
+
+    <button id="google-signout">Sign Out</button>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <script>
+      function handleCredentialResponse(response) {
+        // Google Token / ID_TOKEN
+        // console.log("id_token", response.credential);
+
+        const body = { id_token: response.credential };
+
+        fetch("http://localhost:8080/api/auth/google", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        })
+          .then((resp) => resp.json())
+          .then((resp) => {
+            console.log(resp);
+            localStorage.setItem("email", resp.user?.email);
+          })
+          .catch(console.warn);
+      }
+
+      const button = document.getElementById("google-signout");
+      button.onclick = () => {
+        console.log(google.accounts.id);
+        google.accounts.id.disableAutoSelect();
+
+        google.accounts.id.revoke(localStorage.getItem("email"), (done) => {
+          localStorage.clear();
+          location.reload();
+        });
+      };
+    </script>
   </body>
 </html>
