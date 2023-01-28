@@ -13,7 +13,7 @@ const {
   emailExists,
   userIdExists,
   isPositive,
-} = require("../helpers/db-validators");
+} = require("../helpers/db-validators-users");
 
 const {
   usersGet,

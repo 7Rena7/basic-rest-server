@@ -22,4 +22,10 @@ router.post(
   googleSignin
 );
 
+router.get("*", (req, res) => {
+  res.json({
+    msg: "ERROR 404 | Page Not Found",
+  });
+});
+
 module.exports = router;

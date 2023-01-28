@@ -33,7 +33,7 @@ const validateRoles = (...roles) => {
     if (!roles.includes(userRole.toUpperCase())) {
       res.status(401).json({
         msg: `User is not included in the necessary roles to do this action`,
-        additionalMsg: `User Role: ${userRole}. Needed roles: ${roles.join(
+        additionalMsg: `User Role/s: ${userRole}. Needed roles: ${roles.join(
           ", "
         )}`,
       });
