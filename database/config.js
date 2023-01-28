@@ -10,9 +10,9 @@ const dbConnection = async () => {
         // useCreateIndex: true,
         // useFindAndModify: true,
       })
-      .then(console.log("Base de datos conectada"));
+      .then(console.log("DB Connected"));
   } catch (error) {
-    throw new Error("Error a la hora de inicial la base de datos: ", error);
+    throw new Error("Errors occured when trying to connect to DB: ", error);
   }
 };
 
