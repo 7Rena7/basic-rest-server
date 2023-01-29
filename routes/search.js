@@ -1,10 +1,10 @@
 const { Router } = require("express");
-const { check } = require("express-validator");
 
 const { search } = require("../controllers/search");
+const { validateCollection } = require("../middlewares/validate-collection");
 
 const router = new Router();
 
-router.get("/:collection/:filter", search);
+router.get("/:collection/:filter", [validateCollection], search);
 
 module.exports = router;

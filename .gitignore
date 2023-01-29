@@ -3,3 +3,6 @@ node_modules/
 .env
 
 Google-Client-Keys.json
+
+uploads/users/**/*
+uploads/products/**/*
