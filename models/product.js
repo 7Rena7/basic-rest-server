@@ -17,6 +17,10 @@ const ProductSchema = Schema({
   description: {
     type: String,
   },
+  imageName: { type: String },
+  image: {
+    type: String,
+  },
   isAvailable: {
     type: Boolean,
     default: true,

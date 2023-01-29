@@ -5,8 +5,6 @@ const User = require("../models/user");
 const Category = require("../models/category");
 const Product = require("../models/product");
 
-const availableCollections = ["categories", "products", "roles", "users"];
-
 const searchUsers = async (filter = "", res = response) => {
   if (ObjectId.isValid(filter)) {
     // Search by id
@@ -97,15 +95,6 @@ const searchCategories = async (filter = "", res = response) => {
 
 const search = async (req = request, res = response) => {
   const { collection, filter } = req.params;
-
-  if (!availableCollections.includes(collection)) {
-    return res.status(400).json({
-      msg: "Collection not available, please check the entered collection name.",
-      additionalMsg: `Available collections: ${availableCollections.join(
-        ", "
-      )}`,
-    });
-  }
 
   try {
     switch (collection) {
